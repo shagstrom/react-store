@@ -1,0 +1,26 @@
+{
+  "name": "@shagstrom/react-store",
+  "version": "0.0.0",
+  "description": "A simple React Store",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src/index.js -o dist/index.js"
+  },
+  "homepage": "https://github.com/shagstrom/react-store",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shagstrom/react-store.git"
+  },
+  "author": "Simon Hagström",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-react": "^7.0.0"
+  },
+  "dependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
+  }
+}
