@@ -57,19 +57,25 @@ function (_React$Component) {
 
     _this.state = initState;
     _this.dispatch = _this.dispatch.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.withDispatch = _this.withDispatch.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
   _createClass(Store, [{
     key: "dispatch",
     value: function dispatch(namespace, updater, callback) {
-      if (typeof updater === 'function') {
-        this.setState(function (state) {
-          return _defineProperty({}, namespace, updater(state[namespace]));
-        }, callback);
-      } else {
-        this.setState(_defineProperty({}, namespace, updater), callback);
-      }
+      this.setState(function (state) {
+        return _defineProperty({}, namespace, updater(state[namespace]));
+      }, callback);
+    }
+  }, {
+    key: "withDispatch",
+    value: function withDispatch(action) {
+      var _this2 = this;
+
+      return function () {
+        return action(_this2.dispatch).apply(void 0, arguments);
+      };
     }
   }, {
     key: "render",
@@ -77,7 +83,7 @@ function (_React$Component) {
       return _react.default.createElement(Provider, {
         value: {
           state: this.state,
-          dispatch: this.dispatch
+          withDispatch: this.withDispatch
         }
       }, this.props.children);
     }
@@ -89,13 +95,39 @@ function (_React$Component) {
 exports.Store = Store;
 
 function withStore(propsMap, Component) {
-  return function WithStore(props) {
-    return _react.default.createElement(Consumer, null, function (_ref2) {
-      var state = _ref2.state,
-          dispatch = _ref2.dispatch;
-      return _react.default.createElement(Component, _extends({}, props, propsMap(state), {
-        dispatch: dispatch
-      }));
-    });
-  };
+  return (
+    /*#__PURE__*/
+    function (_React$Component2) {
+      _inherits(WithStore, _React$Component2);
+
+      function WithStore(props) {
+        var _this3;
+
+        _classCallCheck(this, WithStore);
+
+        _this3 = _possibleConstructorReturn(this, _getPrototypeOf(WithStore).call(this, props));
+
+        _this3.consumerChildren = function (_ref2) {
+          var state = _ref2.state,
+              withDispatch = _ref2.withDispatch;
+          return _react.default.createElement(Component, _extends({}, _this3.props, propsMap(state), {
+            withDispatch: withDispatch
+          }));
+        };
+
+        return _this3;
+      }
+
+      _createClass(WithStore, [{
+        key: "render",
+        value: function render() {
+          return _react.default.createElement(Consumer, {
+            children: this.consumerChildren
+          });
+        }
+      }]);
+
+      return WithStore;
+    }(_react.default.Component)
+  );
 }

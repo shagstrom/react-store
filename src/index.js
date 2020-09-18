@@ -9,30 +9,32 @@ export class Store extends React.Component {
     const { children, ...initState } = props;
     this.state = initState;
     this.dispatch = this.dispatch.bind(this);
+    this.withDispatch = this.withDispatch.bind(this)
   }
 
   dispatch(namespace, updater, callback) {
-    if (typeof updater === 'function') {
-      this.setState((state) => ({ [namespace]: updater(state[namespace]) }), callback);
-    } else {
-      this.setState({ [namespace]: updater }, callback);
-    }
+    this.setState((state) => ({ [namespace]: updater(state[namespace]) }), callback);
+  }
+
+  withDispatch(action) {
+    return (...args) => action(this.dispatch)(...args);
   }
 
   render() {
-    return (
-      <Provider value={{ state: this.state, dispatch: this.dispatch }}>{this.props.children}</Provider>
-    );
+    return <Provider value={{ state: this.state, withDispatch: this.withDispatch }}>{this.props.children}</Provider>;
   }
 
 }
 
+
 export function withStore(propsMap, Component) {
-  return function WithStore(props) {
-    return (
-      <Consumer>
-        {({ state, dispatch }) => <Component {...props} {...propsMap(state)} dispatch={dispatch} />}
-      </Consumer>
-    )
+  return class WithStore extends React.Component {
+    constructor(props) {
+      super(props);
+      this.consumerChildren = ({ state, withDispatch }) => <Component {...this.props} {...propsMap(state)} withDispatch={withDispatch} />;
+    }
+    render() {
+      return <Consumer children={this.consumerChildren} />;
+    }
   }
 } 
