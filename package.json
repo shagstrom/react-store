@@ -1,6 +1,6 @@
 {
   "name": "@shagstrom/react-store",
-  "version": "0.0.0",
+  "version": "1.0.0-RC1",
   "description": "A simple React Store",
   "main": "dist/index.js",
   "scripts": {
